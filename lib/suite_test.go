@@ -1,4 +1,4 @@
-package deviceservice_test
+package lib_test
 
 import (
 	"testing"
@@ -9,5 +9,5 @@ import (
 
 func TestBooks(t *testing.T) {
 	RegisterFailHandler(Fail)
-	RunSpecs(t, "Device Service Suite")
+	RunSpecs(t, "Lib Suite")
 }

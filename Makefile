@@ -53,7 +53,7 @@ test: deps-counterfeiter deps-ginkgo
 SOURCES = $(shell find . -name "*.go" | grep -v "_test\." )
 
 build/device-service: $(SOURCES) deps
-	go build -o build/device-service github.com/petewall/device-service/v2/cmd/device-service
+	go build -o build/device-service github.com/petewall/device-service/v2
 
 build: build/device-service
 
@@ -61,4 +61,4 @@ build: build/device-service
 .PHONY: run
 
 run: build
-	./build/build/device-service
+	./build/device-service
