@@ -1,4 +1,3 @@
-SHELL = /bin/bash
 GO_VERSION := $(shell go version)
 GO_VERSION_REQUIRED = go1.17
 GO_VERSION_MATCHED := $(shell go version | grep $(GO_VERSION_REQUIRED))

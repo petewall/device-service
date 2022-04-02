@@ -3,13 +3,17 @@ package lib
 import (
 	"encoding/json"
 	"fmt"
+	"io"
+	"io/ioutil"
 	"net/http"
 
+	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
 )
 
 type API struct {
-	DB DBInterface
+	DB        DBInterface
+	LogOutput io.Writer
 }
 
 func sendJSON(object interface{}, w http.ResponseWriter) {
@@ -53,9 +57,40 @@ func (a *API) getDevice(w http.ResponseWriter, r *http.Request) {
 	sendJSON(device, w)
 }
 
+func (a *API) updateDevice(w http.ResponseWriter, r *http.Request) {
+	if r.ContentLength == 0 {
+		w.WriteHeader(http.StatusBadRequest)
+		_, _ = w.Write([]byte("device payload required"))
+		return
+	}
+
+	body, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		_, _ = w.Write([]byte("failed to read request body"))
+		return
+	}
+
+	var device *Device
+	err = json.Unmarshal(body, &device)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		_, _ = w.Write([]byte("invalid device payload"))
+		return
+	}
+
+	err = a.DB.UpdateDevice(device)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		_, _ = w.Write([]byte("failed to update device in the database"))
+		return
+	}
+}
+
 func (a *API) GetMux() http.Handler {
 	r := mux.NewRouter()
 	r.HandleFunc("/", a.getDevices).Methods("GET")
 	r.HandleFunc("/{mac}", a.getDevice).Methods("GET")
-	return r
+	r.HandleFunc("/{mac}", a.updateDevice).Methods("POST")
+	return handlers.LoggingHandler(a.LogOutput, r)
 }

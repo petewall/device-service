@@ -14,6 +14,7 @@ import (
 type DBInterface interface {
 	GetDevices() ([]*Device, error)
 	GetDevice(mac string) (*Device, error)
+	UpdateDevice(device *Device) error
 }
 
 type DBConfig struct {
@@ -78,5 +79,21 @@ func (db *DB) getDevice(key string) (*Device, error) {
 		return nil, err
 	}
 
+	if device.MAC == "" {
+		return nil, nil
+	}
+
 	return device, nil
+}
+
+func (db *DB) UpdateDevice(device *Device) error {
+	res := db.client.HSet(db.ctx,
+		macToKey(device.MAC),
+		"currentFirmware", device.CurrentFirmware,
+		"currentVersion", device.CurrentVersion,
+		"assignedFirmware", device.AssignedFirmware,
+		"assignedVersion", device.AssignedVersion,
+		"AcceptsPrerelease", device.AcceptsPrerelease,
+	)
+	return res.Err()
 }

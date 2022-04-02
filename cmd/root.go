@@ -24,7 +24,8 @@ to quickly create a Cobra application.`,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		db := Connect(dbConfig)
 		api := &API{
-			DB: db,
+			DB:        db,
+			LogOutput: cmd.OutOrStdout(),
 		}
 
 		cmd.Printf("Listening on port %d\n", port)
