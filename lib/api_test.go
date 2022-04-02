@@ -99,4 +99,68 @@ var _ = Describe("API", Label("api"), func() {
 			})
 		})
 	})
+
+	Describe("GetDevice", func() {
+		When("the device does not exist", func() {
+			BeforeEach(func() {
+				db.GetDeviceReturns(nil, nil)
+			})
+			It("returns not found", func() {
+				req, err := http.NewRequest("GET", "/aa:bb:cc:dd:ee:ff", nil)
+				Expect(err).ToNot(HaveOccurred())
+
+				api.GetMux().ServeHTTP(res, req)
+				Expect(res.Code).To(Equal(http.StatusNotFound))
+				Expect(res.Body.String()).To(Equal("no device found with MAC aa:bb:cc:dd:ee:ff"))
+
+				Expect(db.GetDeviceCallCount()).To(Equal(1))
+			})
+		})
+
+		When("the device exists", func() {
+			BeforeEach(func() {
+				db.GetDeviceReturns(&Device{
+					MAC:              "aa:bb:cc:dd:ee:ff",
+					CurrentFirmware:  "bootstrap",
+					CurrentVersion:   "1.2.3",
+					AssignedFirmware: "bootstrap",
+				}, nil)
+			})
+
+			It("returns the device", func() {
+				req, err := http.NewRequest("GET", "/aa:bb:cc:dd:ee:ff", nil)
+				Expect(err).ToNot(HaveOccurred())
+
+				api.GetMux().ServeHTTP(res, req)
+				Expect(res.Code).To(Equal(http.StatusOK))
+
+				var device *Device
+				err = json.Unmarshal(res.Body.Bytes(), &device)
+				Expect(err).ToNot(HaveOccurred())
+
+				Expect(device.MAC).To(Equal("aa:bb:cc:dd:ee:ff"))
+				Expect(device.CurrentFirmware).To(Equal("bootstrap"))
+				Expect(device.CurrentVersion).To(Equal("1.2.3"))
+				Expect(device.AssignedFirmware).To(Equal("bootstrap"))
+				Expect(device.AssignedVersion).To(BeEmpty())
+				Expect(device.AcceptsPrerelease).To(BeFalse())
+
+				Expect(db.GetDeviceCallCount()).To(Equal(1))
+			})
+		})
+
+		When("the database has an error", func() {
+			BeforeEach(func() {
+				db.GetDeviceReturns(nil, errors.New("db error"))
+			})
+			It("returns a 500 error", func() {
+				req, err := http.NewRequest("GET", "/aa:bb:cc:dd:ee:ff", nil)
+				Expect(err).ToNot(HaveOccurred())
+
+				api.GetMux().ServeHTTP(res, req)
+				Expect(res.Code).To(Equal(http.StatusInternalServerError))
+				Expect(res.Body.String()).To(Equal("failed to request device from the database"))
+			})
+		})
+	})
 })
