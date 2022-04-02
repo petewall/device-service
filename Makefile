@@ -45,7 +45,10 @@ lint: deps-golangci-lint
 	golangci-lint run
 
 test: deps-counterfeiter deps-ginkgo
-	ginkgo -r .
+	ginkgo -r . -skipPackage test
+
+integration-test: deps-counterfeiter deps-ginkgo
+	ginkgo -r test
 
 # #### BUILD ####
 .PHONY: build

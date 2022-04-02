@@ -1,4 +1,4 @@
-package lib_test
+package test_test
 
 import (
 	"testing"
@@ -7,7 +7,7 @@ import (
 	. "github.com/onsi/gomega"
 )
 
-func TestLib(t *testing.T) {
+func TestIntegration(t *testing.T) {
 	RegisterFailHandler(Fail)
-	RunSpecs(t, "Lib unit test suite")
+	RunSpecs(t, "Integration test suite")
 }
