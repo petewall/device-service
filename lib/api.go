@@ -16,7 +16,7 @@ func sendJSON(object interface{}, w http.ResponseWriter) {
 	encoded, err := json.Marshal(object)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte("failed to prepare the list of devices"))
+		_, _ = w.Write([]byte("failed to prepare the list of devices"))
 		return
 	}
 
@@ -28,7 +28,7 @@ func (a *API) getDevices(w http.ResponseWriter, r *http.Request) {
 	devices, err := a.DB.GetDevices()
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte("failed to request devices from the database"))
+		_, _ = w.Write([]byte("failed to request devices from the database"))
 		return
 	}
 
@@ -40,13 +40,13 @@ func (a *API) getDevice(w http.ResponseWriter, r *http.Request) {
 	device, err := a.DB.GetDevice(vars["mac"])
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte("failed to request device from the database"))
+		_, _ = w.Write([]byte("failed to request device from the database"))
 		return
 	}
 
 	if device == nil {
 		w.WriteHeader(http.StatusNotFound)
-		w.Write([]byte(fmt.Sprintf("no device found with MAC %s", vars["mac"])))
+		_, _ = w.Write([]byte(fmt.Sprintf("no device found with MAC %s", vars["mac"])))
 		return
 	}
 
