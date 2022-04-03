@@ -89,11 +89,12 @@ func (db *DB) getDevice(key string) (*Device, error) {
 func (db *DB) UpdateDevice(device *Device) error {
 	res := db.client.HSet(db.ctx,
 		macToKey(device.MAC),
+		"mac", device.MAC,
 		"currentFirmware", device.CurrentFirmware,
 		"currentVersion", device.CurrentVersion,
 		"assignedFirmware", device.AssignedFirmware,
 		"assignedVersion", device.AssignedVersion,
-		"AcceptsPrerelease", device.AcceptsPrerelease,
+		"acceptsPrerelease", device.AcceptsPrerelease,
 	)
 	return res.Err()
 }
