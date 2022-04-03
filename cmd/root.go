@@ -14,13 +14,7 @@ var dbConfig *DBConfig = &DBConfig{}
 
 var rootCmd = &cobra.Command{
 	Use:   "device-service",
-	Short: "A brief description of your application",
-	Long: `A longer description that spans multiple lines and likely contains
-examples and usage of using your application. For example:
-
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+	Short: "A service for managing device records",
 	RunE: func(cmd *cobra.Command, args []string) error {
 		db := Connect(dbConfig)
 		api := &API{
@@ -31,13 +25,8 @@ to quickly create a Cobra application.`,
 		cmd.Printf("Listening on port %d\n", port)
 		return http.ListenAndServe(fmt.Sprintf(":%d", port), api.GetMux())
 	},
-	// Uncomment the following line if your bare application
-	// has an action associated with it:
-	// Run: func(cmd *cobra.Command, args []string) { },
 }
 
-// Execute adds all child commands to the root command and sets flags appropriately.
-// This is called by main.main(). It only needs to happen once to the rootCmd.
 func Execute() {
 	err := rootCmd.Execute()
 	if err != nil {
