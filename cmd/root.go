@@ -7,21 +7,23 @@ import (
 
 	. "github.com/petewall/device-service/v2/lib"
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 )
-
-var port int
-var dbConfig *DBConfig = &DBConfig{}
 
 var rootCmd = &cobra.Command{
 	Use:   "device-service",
 	Short: "A service for managing device records",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		db := Connect(dbConfig)
+		db := Connect(&DBConfig{
+			Host: viper.GetString("db.host"),
+			Port: viper.GetInt("db.port"),
+		})
 		api := &API{
 			DB:        db,
 			LogOutput: cmd.OutOrStdout(),
 		}
 
+		port := viper.GetInt("port")
 		cmd.Printf("Listening on port %d\n", port)
 		return http.ListenAndServe(fmt.Sprintf(":%d", port), api.GetMux())
 	},
@@ -35,7 +37,15 @@ func Execute() {
 }
 
 func init() {
-	rootCmd.Flags().IntVar(&port, "port", 5050, "Port to listen on")
-	rootCmd.Flags().StringVar(&dbConfig.Host, "db-host", "localhost", "DB host")
-	rootCmd.Flags().IntVar(&dbConfig.Port, "db-port", 6379, "DB port")
+	rootCmd.Flags().Int("port", 5050, "Port to listen on")
+	_ = viper.BindPFlag("port", rootCmd.Flags().Lookup("port"))
+	_ = viper.BindEnv("port", "PORT")
+
+	rootCmd.Flags().String("db-host", "", "DB host")
+	_ = viper.BindPFlag("db.host", rootCmd.Flags().Lookup("port"))
+	_ = viper.BindEnv("db.host", "DB_HOST")
+
+	rootCmd.Flags().Int("db-port", 6379, "DB port")
+	_ = viper.BindPFlag("db.port", rootCmd.Flags().Lookup("db.port"))
+	_ = viper.BindEnv("db.port", "DB_PORT")
 }

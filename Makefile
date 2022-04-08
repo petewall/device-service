@@ -6,7 +6,7 @@ HAS_GOLANGCI_LINT := $(shell command -v golangci-lint;)
 HAS_COUNTERFEITER := $(shell command -v counterfeiter;)
 
 # #### DEPS ####
-.PHONY: deps deps-go-binary deps-counterfeiter deps-golangci-lint deps-modules
+.PHONY: deps-go-binary deps-counterfeiter deps-golangci-lint deps-modules
 
 deps-go-binary:
 ifndef GO_VERSION
@@ -35,8 +35,6 @@ endif
 deps-modules: deps-go-binary
 	go mod download
 
-deps: deps-modules deps-counterfeiter deps-ginkgo
-
 
 # #### TEST ####
 .PHONY: lint
@@ -44,23 +42,29 @@ deps: deps-modules deps-counterfeiter deps-ginkgo
 lint: deps-golangci-lint
 	golangci-lint run
 
-test: deps-counterfeiter deps-ginkgo
-	ginkgo -r . -skipPackage test
+test: deps-modules deps-counterfeiter deps-ginkgo
+	ginkgo -r -skipPackage test .
 
-integration-test: deps-counterfeiter deps-ginkgo
-	ginkgo -r test
+integration-test: deps-modules deps-counterfeiter deps-ginkgo
+	ginkgo -r test/integration
+
+test-all: deps-modules deps-counterfeiter deps-ginkgo
+	ginkgo -r .
 
 # #### BUILD ####
 .PHONY: build
 SOURCES = $(shell find . -name "*.go" | grep -v "_test\." )
 
-build/device-service: $(SOURCES) deps
+build/device-service: $(SOURCES) deps-modules
 	go build -o build/device-service github.com/petewall/device-service/v2
 
 build: build/device-service
 
+build-image:
+	pack build device-service --env-file vars.env --builder gcr.io/buildpacks/builder:v1
+
 # #### RUN ####
 .PHONY: run
 
-run: build
+run: build/device-service
 	./build/device-service

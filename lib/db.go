@@ -47,7 +47,7 @@ func macToKey(mac string) string {
 }
 
 func (db *DB) GetDevices() ([]*Device, error) {
-	var devices []*Device
+	devices := []*Device{}
 	iter := db.client.Scan(db.ctx, 0, "devices:*", 0).Iterator()
 	for iter.Next(db.ctx) {
 		device, err := db.getDevice(iter.Val())

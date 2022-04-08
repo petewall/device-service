@@ -4,6 +4,6 @@ Serves devices
 
 ## TODO
 
-* Port is a environment variable
-* Create Dockerfile for distribution
-* Create deployment files for k8s
+* Add APIs to the docs
+* Add k8s deployment files
+* Add redis pre-reqs to the docs
