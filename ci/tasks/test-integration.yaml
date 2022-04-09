@@ -5,6 +5,11 @@ inputs:
   - name: source
 
 run:
-  path: make
+  path: bash
   dir: source
-  args: [integration-test]
+  args:
+    - -exc
+    - |
+      apk add --update g++ make redis
+      redis-server &
+      make integration-test

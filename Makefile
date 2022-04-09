@@ -35,6 +35,9 @@ endif
 deps-modules: deps-go-binary
 	go mod download
 
+# #### SRC ####
+lib/libfakes/fake_dbinterface.go: lib/db.go deps-counterfeiter
+	go generate lib/db.go
 
 # #### TEST ####
 .PHONY: lint
@@ -42,13 +45,13 @@ deps-modules: deps-go-binary
 lint: deps-golangci-lint
 	golangci-lint run
 
-test: deps-modules deps-counterfeiter deps-ginkgo
+test: lib/libfakes/fake_dbinterface.go deps-modules deps-ginkgo
 	ginkgo -r -skipPackage test .
 
-integration-test: deps-modules deps-counterfeiter deps-ginkgo
+integration-test: deps-modules deps-ginkgo
 	ginkgo -r test/integration
 
-test-all: deps-modules deps-counterfeiter deps-ginkgo
+test-all: lib/libfakes/fake_dbinterface.go deps-modules deps-ginkgo
 	ginkgo -r .
 
 # #### BUILD ####
