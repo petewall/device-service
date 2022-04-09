@@ -13,3 +13,4 @@ run:
       apk add --update g++ make redis
       redis-server &
       make integration-test
+      pkill redis-server
