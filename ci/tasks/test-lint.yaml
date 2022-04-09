@@ -10,5 +10,5 @@ run:
   args:
     - -exc
     - |
-      apk add --update make
+      apk add --update g++ make
       make lint
