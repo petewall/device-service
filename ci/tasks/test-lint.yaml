@@ -5,6 +5,10 @@ inputs:
   - name: source
 
 run:
-  path: make
+  path: bash
   dir: source
-  args: [lint]
+  args:
+    - -exc
+    - |
+      apk add --update make
+      make lint
