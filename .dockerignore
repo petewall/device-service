@@ -1,0 +1,5 @@
+build/
+ci/
+scripts/
+temp/
+test/
