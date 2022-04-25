@@ -1,5 +1,5 @@
 GO_VERSION := $(shell go version)
-GO_VERSION_REQUIRED = go1.17
+GO_VERSION_REQUIRED = go1.18
 GO_VERSION_MATCHED := $(shell go version | grep $(GO_VERSION_REQUIRED))
 HAS_GINKGO := $(shell command -v ginkgo;)
 HAS_GOLANGCI_LINT := $(shell command -v golangci-lint;)
@@ -19,17 +19,22 @@ endif
 
 deps-counterfeiter: deps-go-binary
 ifndef HAS_COUNTERFEITER
-	cd /; go get github.com/maxbrunsfeld/counterfeiter/v6
+	go install github.com/maxbrunsfeld/counterfeiter/v6@latest
 endif
 
 deps-ginkgo: deps-go-binary
 ifndef HAS_GINKGO
-	cd /; go get github.com/onsi/ginkgo/ginkgo github.com/onsi/gomega
+	go install github.com/onsi/ginkgo/ginkgo@latest
 endif
 
 deps-golangci-lint: deps-go-binary
 ifndef HAS_GOLANGCI_LINT
-	cd /; go get github.com/golangci/golangci-lint/cmd/golangci-lint
+ifeq ($(PLATFORM), Darwin)
+	brew install golangci-lint
+endif
+ifeq ($(PLATFORM), Linux)
+	curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(go env GOPATH)/bin v1.45.2
+endif
 endif
 
 deps-modules: deps-go-binary
