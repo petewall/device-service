@@ -11,6 +11,6 @@ inputs:
   - name: source
 
 run:
-  path: golangci-lint
+  path: /usr/bin/golangci-lint
   dir: source
-  args: [ run, -v ]
+  args: [ run, --color, always, --verbose ]
