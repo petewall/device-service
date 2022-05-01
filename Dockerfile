@@ -1,4 +1,4 @@
-FROM golang:1.17-alpine AS builder
+FROM golang:1.18-alpine AS builder
 
 WORKDIR /device-service
 
@@ -7,8 +7,7 @@ COPY . /device-service/
 ARG GOOS=linux
 ARG GOARCH=amd64
 
-RUN go mod download
-RUN go build -o build/device-service github.com/petewall/device-service/v2
+RUN apk add git make && make build
 
 FROM alpine
 

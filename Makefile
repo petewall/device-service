@@ -41,7 +41,7 @@ deps-modules: deps-go-binary
 	go mod download
 
 # #### SRC ####
-lib/libfakes/fake_dbinterface.go: lib/db.go deps-counterfeiter
+lib/libfakes/fake_dbinterface.go: lib/db.go
 	go generate lib/db.go
 
 # #### TEST ####
@@ -69,7 +69,7 @@ build/device-service: $(SOURCES) deps-modules
 build: build/device-service
 
 build-image:
-	pack build device-service --env-file vars.env --builder gcr.io/buildpacks/builder:v1
+	docker build -t petewall/device-service .
 
 # #### RUN ####
 .PHONY: run
