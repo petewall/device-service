@@ -1,4 +1,4 @@
-package lib_test
+package internal_test
 
 import (
 	"bytes"
@@ -11,8 +11,9 @@ import (
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 	"github.com/onsi/gomega/gbytes"
+	. "github.com/petewall/device-service/v2/internal"
+	. "github.com/petewall/device-service/v2/internal/internalfakes"
 	. "github.com/petewall/device-service/v2/lib"
-	. "github.com/petewall/device-service/v2/lib/libfakes"
 )
 
 var _ = Describe("API", Label("api"), func() {
@@ -59,12 +60,14 @@ var _ = Describe("API", Label("api"), func() {
 			BeforeEach(func() {
 				db.GetDevicesReturns([]*Device{
 					{
+						Name:             "test device 1",
 						MAC:              "aa:bb:cc:dd:ee:ff",
 						CurrentFirmware:  "bootstrap",
 						CurrentVersion:   "1.2.3",
 						AssignedFirmware: "bootstrap",
 					},
 					{
+						Name:              "test device 2",
 						MAC:               "a1:b2:c3:d4:e5:f6",
 						CurrentFirmware:   "lightswtich",
 						CurrentVersion:    "0.0.1-rc1",
@@ -128,6 +131,7 @@ var _ = Describe("API", Label("api"), func() {
 		When("the device exists", func() {
 			BeforeEach(func() {
 				db.GetDeviceReturns(&Device{
+					Name:             "test device",
 					MAC:              "aa:bb:cc:dd:ee:ff",
 					CurrentFirmware:  "bootstrap",
 					CurrentVersion:   "1.2.3",
@@ -146,6 +150,7 @@ var _ = Describe("API", Label("api"), func() {
 				err = json.Unmarshal(res.Body.Bytes(), &device)
 				Expect(err).ToNot(HaveOccurred())
 
+				Expect(device.Name).To(Equal("test device"))
 				Expect(device.MAC).To(Equal("aa:bb:cc:dd:ee:ff"))
 				Expect(device.CurrentFirmware).To(Equal("bootstrap"))
 				Expect(device.CurrentVersion).To(Equal("1.2.3"))
@@ -178,6 +183,7 @@ var _ = Describe("API", Label("api"), func() {
 		var validDeviceBody []byte
 		BeforeEach(func() {
 			device := &Device{
+				Name:              "test device",
 				MAC:               "aa:bb:cc:dd:ee:ff",
 				CurrentFirmware:   "bootstrap",
 				CurrentVersion:    "1.2.3",
@@ -202,6 +208,7 @@ var _ = Describe("API", Label("api"), func() {
 
 				Expect(db.UpdateDeviceCallCount()).To(Equal(1))
 				device := db.UpdateDeviceArgsForCall(0)
+				Expect(device.Name).To(Equal("test device"))
 				Expect(device.MAC).To(Equal("aa:bb:cc:dd:ee:ff"))
 				Expect(device.CurrentFirmware).To(Equal("bootstrap"))
 				Expect(device.CurrentVersion).To(Equal("1.2.3"))
@@ -251,6 +258,7 @@ var _ = Describe("API", Label("api"), func() {
 
 				Expect(db.UpdateDeviceCallCount()).To(Equal(1))
 				device := db.UpdateDeviceArgsForCall(0)
+				Expect(device.Name).To(Equal("test device"))
 				Expect(device.MAC).To(Equal("aa:bb:cc:dd:ee:ff"))
 				Expect(device.CurrentFirmware).To(Equal("bootstrap"))
 				Expect(device.CurrentVersion).To(Equal("1.2.3"))

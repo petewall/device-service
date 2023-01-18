@@ -1,4 +1,4 @@
-package lib
+package internal
 
 //go:generate counterfeiter -generate
 
@@ -8,6 +8,7 @@ import (
 	"strings"
 
 	"github.com/go-redis/redis/v8"
+	. "github.com/petewall/device-service/v2/lib"
 )
 
 //counterfeiter:generate . DBInterface
@@ -89,6 +90,7 @@ func (db *DB) getDevice(key string) (*Device, error) {
 func (db *DB) UpdateDevice(device *Device) error {
 	res := db.client.HSet(db.ctx,
 		macToKey(device.MAC),
+		"name", device.Name,
 		"mac", device.MAC,
 		"currentFirmware", device.CurrentFirmware,
 		"currentVersion", device.CurrentVersion,

@@ -1,63 +1,51 @@
-GO_VERSION := $(shell go version)
-GO_VERSION_REQUIRED = go1.18
-GO_VERSION_MATCHED := $(shell go version | grep $(GO_VERSION_REQUIRED))
+SHELL := /bin/bash
+
 HAS_GINKGO := $(shell command -v ginkgo;)
 HAS_GOLANGCI_LINT := $(shell command -v golangci-lint;)
 HAS_COUNTERFEITER := $(shell command -v counterfeiter;)
+PLATFORM := $(shell uname -s)
 
 # #### DEPS ####
-.PHONY: deps-go-binary deps-counterfeiter deps-golangci-lint deps-modules
+.PHONY: deps-counterfeiter deps-ginkgo deps-modules
 
-deps-go-binary:
-ifndef GO_VERSION
-	$(error Go not installed)
-endif
-ifndef GO_VERSION_MATCHED
-	$(error Required Go version is $(GO_VERSION_REQUIRED), but was $(GO_VERSION))
-endif
-	@:
-
-deps-counterfeiter: deps-go-binary
+deps-counterfeiter:
 ifndef HAS_COUNTERFEITER
 	go install github.com/maxbrunsfeld/counterfeiter/v6@latest
 endif
 
-deps-ginkgo: deps-go-binary
+deps-ginkgo:
 ifndef HAS_GINKGO
-	go install github.com/onsi/ginkgo/ginkgo@latest
+	go install github.com/onsi/ginkgo/v2/ginkgo
 endif
 
-deps-golangci-lint: deps-go-binary
+deps-modules:
+	go mod download
+
+# #### SRC ####
+internal/internalfakes/fake_dbinterface.go: internal/db.go
+	go generate internal/db.go
+
+# #### TEST ####
+.PHONY: lint test-units integration-test test
+
+lint: internal/internalfakes/fake_dbinterface.go deps-modules
 ifndef HAS_GOLANGCI_LINT
 ifeq ($(PLATFORM), Darwin)
 	brew install golangci-lint
 endif
 ifeq ($(PLATFORM), Linux)
-	curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(go env GOPATH)/bin v1.45.2
+	curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(go env GOPATH)/bin
 endif
 endif
-
-deps-modules: deps-go-binary
-	go mod download
-
-# #### SRC ####
-lib/libfakes/fake_dbinterface.go: lib/db.go
-	go generate lib/db.go
-
-# #### TEST ####
-.PHONY: lint
-
-lint: deps-golangci-lint
 	golangci-lint run
 
-test: lib/libfakes/fake_dbinterface.go deps-modules deps-ginkgo
-	ginkgo -r -skipPackage test .
+test-units: internal/internalfakes/fake_dbinterface.go deps-modules deps-ginkgo
+	ginkgo -r -skip-package test .
 
 integration-test: deps-modules deps-ginkgo
 	ginkgo -r test/integration
 
-test-all: lib/libfakes/fake_dbinterface.go deps-modules deps-ginkgo
-	ginkgo -r .
+test: lint test-units integration-test
 
 # #### BUILD ####
 .PHONY: build
