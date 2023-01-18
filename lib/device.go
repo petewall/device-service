@@ -1,6 +1,7 @@
 package lib
 
 type Device struct {
+	Name              string `json:"name" redis:"name"`
 	MAC               string `json:"mac" redis:"mac"`
 	CurrentFirmware   string `json:"currentFirmware" redis:"currentFirmware"`
 	CurrentVersion    string `json:"currentVersion" redis:"currentVersion"`

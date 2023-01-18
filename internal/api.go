@@ -1,14 +1,14 @@
-package lib
+package internal
 
 import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"net/http"
 
 	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
+	. "github.com/petewall/device-service/v2/lib"
 )
 
 type API struct {
@@ -64,7 +64,7 @@ func (a *API) updateDevice(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	body, err := ioutil.ReadAll(r.Body)
+	body, err := io.ReadAll(r.Body)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		_, _ = w.Write([]byte("failed to read request body"))

@@ -10,7 +10,7 @@ run:
   args:
     - -exc
     - |
-      apk add --update g++ make redis
+      apk add --update bash curl g++ make redis
       redis-server &
-      make integration-test
+      make test
       pkill redis-server

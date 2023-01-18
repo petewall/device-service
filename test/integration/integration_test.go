@@ -12,6 +12,7 @@ import (
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 	"github.com/onsi/gomega/gbytes"
+	. "github.com/petewall/device-service/v2/internal"
 	. "github.com/petewall/device-service/v2/lib"
 )
 
@@ -83,6 +84,7 @@ var _ = Describe("Integration test", Ordered, func() {
 		var validDeviceBody []byte
 		BeforeEach(func() {
 			device := &Device{
+				Name:              "test device",
 				MAC:               "aa:bb:cc:dd:ee:ff",
 				CurrentFirmware:   "bootstrap",
 				CurrentVersion:    "1.2.3",
@@ -117,6 +119,7 @@ var _ = Describe("Integration test", Ordered, func() {
 			Expect(err).ToNot(HaveOccurred())
 
 			Expect(devices).To(HaveLen(1))
+			Expect(devices[0].Name).To(Equal("test device"))
 			Expect(devices[0].MAC).To(Equal("aa:bb:cc:dd:ee:ff"))
 			Expect(devices[0].CurrentFirmware).To(Equal("bootstrap"))
 			Expect(devices[0].CurrentVersion).To(Equal("1.2.3"))
@@ -138,6 +141,7 @@ var _ = Describe("Integration test", Ordered, func() {
 			err = json.Unmarshal(res.Body.Bytes(), &device)
 			Expect(err).ToNot(HaveOccurred())
 
+			Expect(device.Name).To(Equal("test device"))
 			Expect(device.MAC).To(Equal("aa:bb:cc:dd:ee:ff"))
 			Expect(device.CurrentFirmware).To(Equal("bootstrap"))
 			Expect(device.CurrentVersion).To(Equal("1.2.3"))
@@ -151,6 +155,7 @@ var _ = Describe("Integration test", Ordered, func() {
 		var validDeviceBody []byte
 		BeforeEach(func() {
 			device := &Device{
+				Name:              "tested device",
 				MAC:               "aa:bb:cc:dd:ee:ff",
 				CurrentFirmware:   "bootstrap",
 				CurrentVersion:    "9.9.9",
@@ -184,6 +189,7 @@ var _ = Describe("Integration test", Ordered, func() {
 			err = json.Unmarshal(res.Body.Bytes(), &devices)
 			Expect(err).ToNot(HaveOccurred())
 			Expect(devices).To(HaveLen(1))
+			Expect(devices[0].Name).To(Equal("tested device"))
 			Expect(devices[0].MAC).To(Equal("aa:bb:cc:dd:ee:ff"))
 			Expect(devices[0].CurrentFirmware).To(Equal("bootstrap"))
 			Expect(devices[0].CurrentVersion).To(Equal("9.9.9"))
