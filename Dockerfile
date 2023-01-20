@@ -7,7 +7,8 @@ COPY . /device-service/
 ARG GOOS=linux
 ARG GOARCH=amd64
 
-RUN apk add git make && make build
+RUN apk add bash make
+RUN make build
 
 FROM alpine
 
