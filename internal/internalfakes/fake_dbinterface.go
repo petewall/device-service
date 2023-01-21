@@ -34,10 +34,25 @@ type FakeDBInterface struct {
 		result1 []*lib.Device
 		result2 error
 	}
-	UpdateDeviceStub        func(*lib.Device) error
+	SetDeviceFieldStub        func(string, string, string) error
+	setDeviceFieldMutex       sync.RWMutex
+	setDeviceFieldArgsForCall []struct {
+		arg1 string
+		arg2 string
+		arg3 string
+	}
+	setDeviceFieldReturns struct {
+		result1 error
+	}
+	setDeviceFieldReturnsOnCall map[int]struct {
+		result1 error
+	}
+	UpdateDeviceStub        func(string, string, string) error
 	updateDeviceMutex       sync.RWMutex
 	updateDeviceArgsForCall []struct {
-		arg1 *lib.Device
+		arg1 string
+		arg2 string
+		arg3 string
 	}
 	updateDeviceReturns struct {
 		result1 error
@@ -169,18 +184,83 @@ func (fake *FakeDBInterface) GetDevicesReturnsOnCall(i int, result1 []*lib.Devic
 	}{result1, result2}
 }
 
-func (fake *FakeDBInterface) UpdateDevice(arg1 *lib.Device) error {
+func (fake *FakeDBInterface) SetDeviceField(arg1 string, arg2 string, arg3 string) error {
+	fake.setDeviceFieldMutex.Lock()
+	ret, specificReturn := fake.setDeviceFieldReturnsOnCall[len(fake.setDeviceFieldArgsForCall)]
+	fake.setDeviceFieldArgsForCall = append(fake.setDeviceFieldArgsForCall, struct {
+		arg1 string
+		arg2 string
+		arg3 string
+	}{arg1, arg2, arg3})
+	stub := fake.SetDeviceFieldStub
+	fakeReturns := fake.setDeviceFieldReturns
+	fake.recordInvocation("SetDeviceField", []interface{}{arg1, arg2, arg3})
+	fake.setDeviceFieldMutex.Unlock()
+	if stub != nil {
+		return stub(arg1, arg2, arg3)
+	}
+	if specificReturn {
+		return ret.result1
+	}
+	return fakeReturns.result1
+}
+
+func (fake *FakeDBInterface) SetDeviceFieldCallCount() int {
+	fake.setDeviceFieldMutex.RLock()
+	defer fake.setDeviceFieldMutex.RUnlock()
+	return len(fake.setDeviceFieldArgsForCall)
+}
+
+func (fake *FakeDBInterface) SetDeviceFieldCalls(stub func(string, string, string) error) {
+	fake.setDeviceFieldMutex.Lock()
+	defer fake.setDeviceFieldMutex.Unlock()
+	fake.SetDeviceFieldStub = stub
+}
+
+func (fake *FakeDBInterface) SetDeviceFieldArgsForCall(i int) (string, string, string) {
+	fake.setDeviceFieldMutex.RLock()
+	defer fake.setDeviceFieldMutex.RUnlock()
+	argsForCall := fake.setDeviceFieldArgsForCall[i]
+	return argsForCall.arg1, argsForCall.arg2, argsForCall.arg3
+}
+
+func (fake *FakeDBInterface) SetDeviceFieldReturns(result1 error) {
+	fake.setDeviceFieldMutex.Lock()
+	defer fake.setDeviceFieldMutex.Unlock()
+	fake.SetDeviceFieldStub = nil
+	fake.setDeviceFieldReturns = struct {
+		result1 error
+	}{result1}
+}
+
+func (fake *FakeDBInterface) SetDeviceFieldReturnsOnCall(i int, result1 error) {
+	fake.setDeviceFieldMutex.Lock()
+	defer fake.setDeviceFieldMutex.Unlock()
+	fake.SetDeviceFieldStub = nil
+	if fake.setDeviceFieldReturnsOnCall == nil {
+		fake.setDeviceFieldReturnsOnCall = make(map[int]struct {
+			result1 error
+		})
+	}
+	fake.setDeviceFieldReturnsOnCall[i] = struct {
+		result1 error
+	}{result1}
+}
+
+func (fake *FakeDBInterface) UpdateDevice(arg1 string, arg2 string, arg3 string) error {
 	fake.updateDeviceMutex.Lock()
 	ret, specificReturn := fake.updateDeviceReturnsOnCall[len(fake.updateDeviceArgsForCall)]
 	fake.updateDeviceArgsForCall = append(fake.updateDeviceArgsForCall, struct {
-		arg1 *lib.Device
-	}{arg1})
+		arg1 string
+		arg2 string
+		arg3 string
+	}{arg1, arg2, arg3})
 	stub := fake.UpdateDeviceStub
 	fakeReturns := fake.updateDeviceReturns
-	fake.recordInvocation("UpdateDevice", []interface{}{arg1})
+	fake.recordInvocation("UpdateDevice", []interface{}{arg1, arg2, arg3})
 	fake.updateDeviceMutex.Unlock()
 	if stub != nil {
-		return stub(arg1)
+		return stub(arg1, arg2, arg3)
 	}
 	if specificReturn {
 		return ret.result1
@@ -194,17 +274,17 @@ func (fake *FakeDBInterface) UpdateDeviceCallCount() int {
 	return len(fake.updateDeviceArgsForCall)
 }
 
-func (fake *FakeDBInterface) UpdateDeviceCalls(stub func(*lib.Device) error) {
+func (fake *FakeDBInterface) UpdateDeviceCalls(stub func(string, string, string) error) {
 	fake.updateDeviceMutex.Lock()
 	defer fake.updateDeviceMutex.Unlock()
 	fake.UpdateDeviceStub = stub
 }
 
-func (fake *FakeDBInterface) UpdateDeviceArgsForCall(i int) *lib.Device {
+func (fake *FakeDBInterface) UpdateDeviceArgsForCall(i int) (string, string, string) {
 	fake.updateDeviceMutex.RLock()
 	defer fake.updateDeviceMutex.RUnlock()
 	argsForCall := fake.updateDeviceArgsForCall[i]
-	return argsForCall.arg1
+	return argsForCall.arg1, argsForCall.arg2, argsForCall.arg3
 }
 
 func (fake *FakeDBInterface) UpdateDeviceReturns(result1 error) {
@@ -237,6 +317,8 @@ func (fake *FakeDBInterface) Invocations() map[string][][]interface{} {
 	defer fake.getDeviceMutex.RUnlock()
 	fake.getDevicesMutex.RLock()
 	defer fake.getDevicesMutex.RUnlock()
+	fake.setDeviceFieldMutex.RLock()
+	defer fake.setDeviceFieldMutex.RUnlock()
 	fake.updateDeviceMutex.RLock()
 	defer fake.updateDeviceMutex.RUnlock()
 	copiedInvocations := map[string][][]interface{}{}

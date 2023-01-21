@@ -6,6 +6,7 @@ import (
 	"context"
 	"fmt"
 	"strings"
+	"time"
 
 	"github.com/go-redis/redis/v8"
 	. "github.com/petewall/device-service/v2/lib"
@@ -15,7 +16,8 @@ import (
 type DBInterface interface {
 	GetDevices() ([]*Device, error)
 	GetDevice(mac string) (*Device, error)
-	UpdateDevice(device *Device) error
+	UpdateDevice(mac, firmwareType, firmwareVersion string) error
+	SetDeviceField(mac, key, value string) error
 }
 
 type DBConfig struct {
@@ -87,16 +89,22 @@ func (db *DB) getDevice(key string) (*Device, error) {
 	return device, nil
 }
 
-func (db *DB) UpdateDevice(device *Device) error {
+func (db *DB) UpdateDevice(mac, firmwareType, firmwareVersion string) error {
 	res := db.client.HSet(db.ctx,
-		macToKey(device.MAC),
-		"name", device.Name,
-		"mac", device.MAC,
-		"currentFirmware", device.CurrentFirmware,
-		"currentVersion", device.CurrentVersion,
-		"assignedFirmware", device.AssignedFirmware,
-		"assignedVersion", device.AssignedVersion,
-		"acceptsPrerelease", device.AcceptsPrerelease,
+		macToKey(mac),
+		"mac", mac,
+		"currentFirmware", firmwareType,
+		"currentVersion", firmwareVersion,
+		"lastUpdate", time.Now().Unix(),
+	)
+	return res.Err()
+}
+
+func (db *DB) SetDeviceField(mac, key, value string) error {
+	res := db.client.HSet(db.ctx,
+		macToKey(mac),
+		"mac", mac,
+		key, value,
 	)
 	return res.Err()
 }

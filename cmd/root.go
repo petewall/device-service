@@ -25,7 +25,7 @@ var rootCmd = &cobra.Command{
 
 		port := viper.GetInt("port")
 		cmd.Printf("Listening on port %d\n", port)
-		return http.ListenAndServe(fmt.Sprintf(":%d", port), api.GetMux())
+		return http.ListenAndServe(fmt.Sprintf(":%d", port), api.GetHttpHandler())
 	},
 }
 
