@@ -42,10 +42,10 @@ endif
 test-units: internal/internalfakes/fake_dbinterface.go deps-modules deps-ginkgo
 	ginkgo -r -skip-package test .
 
-integration-test: deps-modules deps-ginkgo
-	ginkgo -r test/integration
+test-features: deps-modules deps-ginkgo
+	ginkgo -r test
 
-test: lint test-units integration-test
+test: lint test-units test-features
 
 # #### BUILD ####
 .PHONY: build

@@ -9,6 +9,7 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
+	"github.com/petewall/device-service/v2/lib"
 )
 
 type API struct {
@@ -57,11 +58,6 @@ func (a *API) getDevice(w http.ResponseWriter, r *http.Request) {
 	sendJSON(device, w)
 }
 
-type UpdateDevicePayload struct {
-	Firmware string `json:"firmware"`
-	Version  string `json:"version"`
-}
-
 func (a *API) updateDevice(w http.ResponseWriter, r *http.Request) {
 	mac := chi.URLParam(r, "mac")
 
@@ -78,7 +74,7 @@ func (a *API) updateDevice(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var payload *UpdateDevicePayload
+	var payload *lib.UpdateDevicePayload
 	err = json.Unmarshal(body, &payload)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
@@ -148,7 +144,7 @@ func (a *API) setFirmwareVersion(w http.ResponseWriter, r *http.Request) {
 func (a *API) GetHttpHandler() http.Handler {
 	r := chi.NewRouter()
 	loggingMiddleware := middleware.RequestLogger(&middleware.DefaultLogFormatter{
-		Logger: log.New(a.LogOutput, "", log.LstdFlags),
+		Logger: log.New(a.LogOutput, "API", log.LstdFlags),
 	})
 
 	r.Use(loggingMiddleware)

@@ -9,3 +9,8 @@ type Device struct {
 	AssignedVersion  string `json:"assignedVersion" redis:"assignedVersion"`
 	LastUpdate       int64  `json:"lastUpdate" redis:"lastUpdate"`
 }
+
+type UpdateDevicePayload struct {
+	Firmware string `json:"firmware"`
+	Version  string `json:"version"`
+}

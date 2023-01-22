@@ -93,8 +93,8 @@ func (db *DB) UpdateDevice(mac, firmwareType, firmwareVersion string) error {
 	res := db.client.HSet(db.ctx,
 		macToKey(mac),
 		"mac", mac,
-		"currentFirmware", firmwareType,
-		"currentVersion", firmwareVersion,
+		"firmware", firmwareType,
+		"version", firmwareVersion,
 		"lastUpdate", time.Now().Unix(),
 	)
 	return res.Err()

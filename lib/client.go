@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"net/url"
 )
 
 type Client struct {
@@ -73,14 +74,9 @@ func (c *Client) GetDevice(mac string) (*Device, error) {
 	return device, nil
 }
 
-type updateDevicePayload struct {
-	Firmware string `json:"firmware"`
-	Version  string `json:"version"`
-}
-
 func (c *Client) UpdateDevice(mac, firmwareType, firmwareVersion string) error {
 	name := "update device " + mac
-	payload := &updateDevicePayload{
+	payload := &UpdateDevicePayload{
 		Firmware: firmwareType,
 		Version:  firmwareVersion,
 	}
@@ -95,21 +91,21 @@ func (c *Client) UpdateDevice(mac, firmwareType, firmwareVersion string) error {
 
 func (c *Client) SetDeviceName(mac, name string) error {
 	return c.post(
-		"/"+mac+"/name?val"+name,
+		"/"+mac+"/name?val="+url.QueryEscape(name),
 		"set device "+mac+" name to "+name,
 		nil)
 }
 
 func (c *Client) SetDeviceFirmwareType(mac, firmwareType string) error {
 	return c.post(
-		"/"+mac+"/firmware?val"+firmwareType,
+		"/"+mac+"/firmware?val="+url.QueryEscape(firmwareType),
 		"set device "+mac+" firmware type to "+firmwareType,
 		nil)
 }
 
 func (c *Client) SetDeviceFirmwareVersion(mac, firmwareVersion string) error {
 	return c.post(
-		"/"+mac+"/version?val"+firmwareVersion,
+		"/"+mac+"/version?val="+url.QueryEscape(firmwareVersion),
 		"set device "+mac+" firmware version to "+firmwareVersion,
 		nil)
 }
