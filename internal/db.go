@@ -1,7 +1,5 @@
 package internal
 
-//go:generate counterfeiter -generate
-
 import (
 	"context"
 	"fmt"
