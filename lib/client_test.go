@@ -8,7 +8,7 @@ import (
 	. "github.com/onsi/gomega"
 	"github.com/onsi/gomega/ghttp"
 
-	"github.com/petewall/device-service/v2/lib"
+	"github.com/petewall/device-service/lib"
 )
 
 var _ = Describe("Client", func() {

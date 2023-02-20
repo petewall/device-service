@@ -12,7 +12,7 @@ import (
 	. "github.com/onsi/gomega"
 	. "github.com/onsi/gomega/gbytes"
 	"github.com/onsi/gomega/gexec"
-	"github.com/petewall/device-service/v2/lib"
+	"github.com/petewall/device-service/lib"
 	"github.com/phayes/freeport"
 )
 
@@ -32,7 +32,7 @@ var (
 
 var _ = BeforeSuite(func() {
 	var err error
-	deviceService, err = gexec.Build("github.com/petewall/device-service/v2")
+	deviceService, err = gexec.Build("github.com/petewall/device-service")
 	Expect(err).ToNot(HaveOccurred())
 })
 

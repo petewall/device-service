@@ -11,9 +11,9 @@ import (
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 	"github.com/onsi/gomega/gbytes"
-	. "github.com/petewall/device-service/v2/internal"
-	. "github.com/petewall/device-service/v2/internal/internalfakes"
-	. "github.com/petewall/device-service/v2/lib"
+	. "github.com/petewall/device-service/internal"
+	. "github.com/petewall/device-service/internal/internalfakes"
+	. "github.com/petewall/device-service/lib"
 )
 
 var _ = Describe("API", Label("api"), func() {

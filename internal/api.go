@@ -9,7 +9,7 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
-	"github.com/petewall/device-service/v2/lib"
+	"github.com/petewall/device-service/lib"
 )
 
 type API struct {

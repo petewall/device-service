@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"os"
 
-	. "github.com/petewall/device-service/v2/internal"
+	. "github.com/petewall/device-service/internal"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )

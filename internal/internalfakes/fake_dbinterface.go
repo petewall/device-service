@@ -4,8 +4,8 @@ package internalfakes
 import (
 	"sync"
 
-	"github.com/petewall/device-service/v2/internal"
-	"github.com/petewall/device-service/v2/lib"
+	"github.com/petewall/device-service/internal"
+	"github.com/petewall/device-service/lib"
 )
 
 type FakeDBInterface struct {

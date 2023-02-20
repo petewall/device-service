@@ -7,7 +7,7 @@ import (
 	"time"
 
 	"github.com/go-redis/redis/v8"
-	. "github.com/petewall/device-service/v2/lib"
+	. "github.com/petewall/device-service/lib"
 )
 
 //counterfeiter:generate . DBInterface

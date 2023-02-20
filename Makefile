@@ -52,7 +52,7 @@ test: lint test-units test-features
 SOURCES = $(shell find . -name "*.go" | grep -v "_test\." )
 
 build/device-service: $(SOURCES) deps-modules
-	go build -o build/device-service github.com/petewall/device-service/v2
+	go build -o build/device-service github.com/petewall/device-service
 
 build: build/device-service
 

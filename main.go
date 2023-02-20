@@ -1,6 +1,6 @@
 package main
 
-import "github.com/petewall/device-service/v2/cmd"
+import "github.com/petewall/device-service/cmd"
 
 func main() {
 	cmd.Execute()
