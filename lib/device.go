@@ -1,6 +1,6 @@
 package lib
 
-import "github.com/coreos/go-semver/semver"
+import "github.com/Masterminds/semver/v3"
 
 type Device struct {
 	MAC              string `json:"mac" redis:"mac"`
@@ -19,7 +19,7 @@ func (d *Device) IsDifferent(firmwareType, firmwareVersion string) bool {
 func (d *Device) IsOlderThan(version string) bool {
 	myVersion, _ := semver.NewVersion(d.Version)
 	otherVersion, _ := semver.NewVersion(version)
-	return myVersion.LessThan(*otherVersion)
+	return myVersion.LessThan(otherVersion)
 }
 
 type UpdateDevicePayload struct {

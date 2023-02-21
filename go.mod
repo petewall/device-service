@@ -16,6 +16,7 @@ require (
 )
 
 require (
+	github.com/Masterminds/semver/v3 v3.2.0
 	github.com/cespare/xxhash/v2 v2.2.0 // indirect
 	github.com/inconshreveable/mousetrap v1.1.0 // indirect
 	github.com/kr/pretty v0.3.1 // indirect
