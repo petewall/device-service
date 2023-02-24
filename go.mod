@@ -5,7 +5,7 @@ go 1.9
 require (
 	github.com/go-chi/chi/v5 v5.0.8
 	github.com/go-redis/redis/v8 v8.11.5
-	github.com/go-task/slim-sprig v0.0.0-20210107165309-348f09dbbbc0
+	github.com/go-task/slim-sprig v2.20.0+incompatible
 	github.com/google/pprof v0.0.0-20230207041349-798e818bf904
 	github.com/maxbrunsfeld/counterfeiter/v6 v6.6.1
 	github.com/onsi/ginkgo/v2 v2.8.3
@@ -16,8 +16,12 @@ require (
 )
 
 require (
+	github.com/Masterminds/goutils v1.1.1 // indirect
+	github.com/Masterminds/semver v1.5.0 // indirect
 	github.com/Masterminds/semver/v3 v3.2.0
 	github.com/cespare/xxhash/v2 v2.2.0 // indirect
+	github.com/huandu/xstrings v1.4.0 // indirect
+	github.com/imdario/mergo v0.3.13 // indirect
 	github.com/inconshreveable/mousetrap v1.1.0 // indirect
 	github.com/kr/pretty v0.3.1 // indirect
 )
